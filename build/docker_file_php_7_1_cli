@@ -1,0 +1,73 @@
+ARG image_tag 
+
+FROM php:$image_tag
+
+# curl -fsSL 'https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz' -o /usr/src/libevent-2.1.8-stable.tar.gz
+# curl -fsSL 'http://pecl.php.net/get/event-2.3.0.tgz' -o /usr/src/event-2.3.0.tgz
+
+COPY ./libevent-2.1.8-stable.tar.gz /usr/src/libevent-2.1.8-stable.tar.gz    
+COPY ./event-2.3.0.tgz /usr/src/event-2.3.0.tgz
+COPY ./sources_list_aliyun /etc/apt/sources.list
+
+RUN set -xe \
+    && buildDeps=" \
+        build-essential \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng12-dev \
+        libssl-dev \
+    " \
+    && runtimeDeps=" \
+        libfreetype6 \
+        libjpeg62-turbo \
+        libmcrypt4 \
+        libpng12-0 \
+    " \
+    && DEBIAN_FRONTEND=noninteractive \
+    && apt-get -o Acquire::Check-Valid-Until=false update \
+    && apt-get install -y ${runtimeDeps} ${buildDeps} --no-install-recommends \
+    && docker-php-ext-install iconv mcrypt mysqli pdo pdo_mysql zip sockets pcntl posix \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install gd \
+    \
+    \
+    \
+    && cd /usr/src \
+    && mkdir -p libevent-2.1.8 \
+    && tar -xf libevent-2.1.8-stable.tar.gz -C libevent-2.1.8 --strip-components=1 \
+    && rm libevent-2.1.8-stable.tar.gz \
+    && ( \
+    cd libevent-2.1.8 \
+    && ./configure --prefix=/usr/local/libevent-2.1.8 \
+    && make -j$(nproc) \
+    && make install \
+    && make clean \
+    ) \
+    && rm -r libevent-2.1.8 \
+    \
+    \
+    \
+    && cd /usr/src \
+    && mkdir -p event-2.3.0 \
+    && tar -xf event-2.3.0.tgz -C event-2.3.0 --strip-components=1 \
+    && rm event-2.3.0.tgz \
+    && ( \
+    cd event-2.3.0 \
+    && phpize \
+    && ./configure --with-event-libevent-dir=/usr/local/libevent-2.1.8/ \
+    && make -j$(nproc) \
+    && make install \
+    && make clean \
+    ) \
+    && rm -r event-2.3.0 \
+    && docker-php-ext-enable event \
+    \
+    \
+    \
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps \
+    && rm -rf /var/cache/apt/* \
+    && rm -rf /var/lib/apt/lists/*
+    
+# RUN set -xe \
+#    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer

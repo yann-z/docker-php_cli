@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+
+### PHP-FPM Container #######################################
+
+    php-7.1-cli:
+      container_name: "php-${TAG_PHP_7_1_CLI}"
+      image: "yann/php:${TAG_PHP_7_1_CLI}"
+      build:
+        context: ./build
+        dockerfile: docker_file_php_7_1_cli
+        args:
+          - image_tag=${TAG_PHP_7_1_CLI}
+      volumes:
+        - ${PATH_PROJECT_ROOT}/conf/php.ini:/usr/local/etc/php/php.ini
+        - ${PATH_WEB_DATA}/cli_log:/usr/local/var/log
+        - ${PATH_APP_ROOT}:/var/www/app     
+      working_dir: /var/www/app
+      expose:
+        - "8000"
+        - "8002"
+        - "8003"
+        - "8004"
+        - "8005"
+        - "8006"
+        - "8007"
+        - "8008"
+      environment:
+        TZ: "Asia/Shanghai"
