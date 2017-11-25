@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-### PHP-FPM Container #######################################
+### PHP-CLI Container #######################################
 
     php-7.1-cli:
       container_name: "php-${TAG_PHP_7_1_CLI}"
@@ -17,14 +17,15 @@ services:
         - ${PATH_WEB_DATA}/cli_log:/usr/local/var/log
         - ${PATH_APP_ROOT}:/var/www/app     
       working_dir: /var/www/app
-      expose:
-        - "8000"
-        - "8002"
-        - "8003"
-        - "8004"
-        - "8005"
-        - "8006"
-        - "8007"
-        - "8008"
+      networks:
+        - php-cli
+      ports:
+        - "8000:8000"
       environment:
         TZ: "Asia/Shanghai"
+
+
+### Networks Setup ##########################################
+    
+networks:
+    php-cli:
