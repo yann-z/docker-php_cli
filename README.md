@@ -32,7 +32,7 @@ run-phpc
 run-phpc bash
 ~~~
 
-### 启动php-7.1-cli服务并运行PHP命令，例如输出'hello world'
+### 启动php-7.1-cli服务并运行shell命令，例如输出'hello world'
 ~~~
 run-phpc echo 'hello world'
 ~~~
