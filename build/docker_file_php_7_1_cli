@@ -69,5 +69,20 @@ RUN set -xe \
     && rm -rf /var/cache/apt/* \
     && rm -rf /var/lib/apt/lists/*
     
+RUN set -xe \
+    && curl -fsSL 'https://xdebug.org/files/xdebug-2.5.5.tgz' -o xdebug.tar.gz \
+    && mkdir -p xdebug \
+    && tar -xf xdebug.tar.gz -C xdebug --strip-components=1 \
+    && rm xdebug.tar.gz \
+    && ( \
+    cd xdebug \
+    && phpize \
+    && ./configure --enable-xdebug \
+    && make -j$(nproc) \
+    && make install \
+    && make clean \
+    ) \
+    && rm -r xdebug
+    
 # RUN set -xe \
 #    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer

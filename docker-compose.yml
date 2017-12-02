@@ -14,9 +14,10 @@ services:
           - image_tag=${TAG_PHP_7_1_CLI}
       volumes:
         - ${PATH_PROJECT_ROOT}/conf/php.ini:/usr/local/etc/php/php.ini
+        - ${PATH_PROJECT_ROOT}/conf/php_xdbug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdbug.ini
         - ${PATH_WEB_DATA}/cli_log:/usr/local/var/log
-        - ${PATH_APP_ROOT}:/var/www/app     
-      working_dir: /var/www/app
+        - ${PATH_WEB_TEST}:/var/www/test
+      working_dir: /var/www/test
       networks:
         - php-cli
       ports:
