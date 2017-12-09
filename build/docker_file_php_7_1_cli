@@ -5,7 +5,7 @@ FROM php:$image_tag
 # curl -fsSL 'https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz' -o /usr/src/libevent-2.1.8-stable.tar.gz
 # curl -fsSL 'http://pecl.php.net/get/event-2.3.0.tgz' -o /usr/src/event-2.3.0.tgz
 
-COPY ./libevent-2.1.8-stable.tar.gz /usr/src/libevent-2.1.8-stable.tar.gz    
+COPY ./libevent-2.1.8-stable.tar.gz /usr/src/libevent-2.1.8-stable.tar.gz
 COPY ./event-2.3.0.tgz /usr/src/event-2.3.0.tgz
 COPY ./sources_list_aliyun /etc/apt/sources.list
 
