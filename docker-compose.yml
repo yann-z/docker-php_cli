@@ -23,10 +23,10 @@ services:
       ports:
         - "8000:8000"
       environment:
-        HOSTNAME: xdebug_host
         TZ: "Asia/Shanghai"
+        HOSTNAME: xdebug_ide
       extra_hosts:
-        xdebug_host: ${XDEBUG_HOST_IP}
+        xdebug_ide: ${XDEBUG_IDE_IP}
 
 ### Networks Setup ##########################################
 
