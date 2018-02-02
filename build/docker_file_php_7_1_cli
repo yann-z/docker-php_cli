@@ -10,8 +10,8 @@ COPY ./event-2.3.0.tgz /usr/src/event-2.3.0.tgz
 COPY ./sources_list_aliyun /etc/apt/sources.list
 
 RUN set -xe \
-    && build_dependencies="build-essential libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev" \
-    && run_dependencies="libfreetype6 libjpeg62-turbo libmcrypt4 libpng12-0" \
+    && build_dependencies="libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libmcrypt-dev libssl-dev" \
+    && run_dependencies="libfreetype6 libjpeg62-turbo libpng12-0 libmcrypt4" \ 
     && DEBIAN_FRONTEND=noninteractive \
     && apt-get -o Acquire::Check-Valid-Until=false update \
     && apt-get install -y ${build_dependencies} ${run_dependencies} --no-install-recommends \
