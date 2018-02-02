@@ -10,26 +10,14 @@ COPY ./event-2.3.0.tgz /usr/src/event-2.3.0.tgz
 COPY ./sources_list_aliyun /etc/apt/sources.list
 
 RUN set -xe \
-    && buildDeps=" \
-        build-essential \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libmcrypt-dev \
-        libpng12-dev \
-        libssl-dev \
-    " \
-    && runtimeDeps=" \
-        libfreetype6 \
-        libjpeg62-turbo \
-        libmcrypt4 \
-        libpng12-0 \
-    " \
+    && build_dependencies="build-essential libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev" \
+    && run_dependencies="libfreetype6 libjpeg62-turbo libmcrypt4 libpng12-0" \
     && DEBIAN_FRONTEND=noninteractive \
     && apt-get -o Acquire::Check-Valid-Until=false update \
-    && apt-get install -y ${runtimeDeps} ${buildDeps} --no-install-recommends \
-    && docker-php-ext-install iconv mcrypt mysqli pdo pdo_mysql zip sockets pcntl posix \
+    && apt-get install -y ${build_dependencies} ${run_dependencies} --no-install-recommends \
+    && docker-php-ext-install -j$(nproc) iconv mcrypt mysqli pdo pdo_mysql zip sockets pcntl posix \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install gd \
+    && docker-php-ext-install -j$(nproc) gd \
     \
     \
     \
@@ -65,7 +53,7 @@ RUN set -xe \
     \
     \
     \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps \
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false ${build_dependencies} \
     && rm -rf /var/cache/apt/* \
     && rm -rf /var/lib/apt/lists/*
     
