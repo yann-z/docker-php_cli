@@ -4,14 +4,16 @@ services:
 
 ### PHP-CLI Container #######################################
 
-    php-7.1-cli:
-      container_name: "php-${TAG_PHP_7_1_CLI}"
-      image: "yann/php:${TAG_PHP_7_1_CLI}"
+    php71-cli-service:
+      container_name: "php-${TAG_PHP71_CLI}"
+      image: "yann/php:${TAG_PHP71_CLI}"
       build:
         context: ./build
-        dockerfile: docker_file_php_7_1_cli
+        dockerfile: docker_file_php71_cli
         args:
-          - image_tag=${TAG_PHP_7_1_CLI}
+          - IMAGE_TAG=${TAG_PHP71_CLI}
+          - WITH_XDEBUG=${PHP_WITH_XDEBUG} 
+          - WITH_COMPOSER=${PHP_WITH_COMPOSER}
       volumes:
         - ${PATH_PROJECT_ROOT}/conf/php.ini:/usr/local/etc/php/php.ini
         - ${PATH_PROJECT_ROOT}/conf/php_xdbug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdbug.ini
@@ -24,9 +26,9 @@ services:
         - "8000:8000"
       environment:
         TZ: "Asia/Shanghai"
-        HOSTNAME: xdebug_ide
+        HOSTNAME: xdebug_ide_host
       extra_hosts:
-        xdebug_ide: ${XDEBUG_IDE_IP}
+        xdebug_ide_host: ${XDEBUG_IDE_HOST_IP}
 
 ### Networks Setup ##########################################
 

@@ -1,20 +1,22 @@
-ARG image_tag 
+ARG IMAGE_TAG
 
-FROM php:$image_tag
+FROM php:${IMAGE_TAG}
+
+#################### Install Extension ####################
 
 # curl -fsSL 'https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz' -o /usr/src/libevent-2.1.8-stable.tar.gz
 # curl -fsSL 'http://pecl.php.net/get/event-2.3.0.tgz' -o /usr/src/event-2.3.0.tgz
 
 COPY ./libevent-2.1.8-stable.tar.gz /usr/src/libevent-2.1.8-stable.tar.gz
 COPY ./event-2.3.0.tgz /usr/src/event-2.3.0.tgz
-COPY ./sources_list_aliyun /etc/apt/sources.list
+COPY ./sources_list_jessie_aliyun /etc/apt/sources.list
 
 RUN set -xe \
-    && build_dependencies="libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libmcrypt-dev libssl-dev" \
-    && run_dependencies="libfreetype6 libjpeg62-turbo libpng12-0 libmcrypt4" \ 
+    && BUILD_DEPENDENCIES="libfreetype6-dev libjpeg62-turbo-dev libpng12-dev libmcrypt-dev libssl-dev" \
+    && RUN_DEPENDENCIES="libfreetype6 libjpeg62-turbo libpng12-0 libmcrypt4" \ 
     && DEBIAN_FRONTEND=noninteractive \
     && apt-get -o Acquire::Check-Valid-Until=false update \
-    && apt-get install -y ${build_dependencies} ${run_dependencies} --no-install-recommends \
+    && apt-get install -y ${BUILD_DEPENDENCIES} ${RUN_DEPENDENCIES} --no-install-recommends \
     && docker-php-ext-install -j$(nproc) iconv mcrypt mysqli pdo pdo_mysql zip sockets pcntl posix \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
@@ -53,12 +55,17 @@ RUN set -xe \
     \
     \
     \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false ${build_dependencies} \
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false ${BUILD_DEPENDENCIES} \
     && rm -rf /var/cache/apt/* \
     && rm -rf /var/lib/apt/lists/*
-    
-RUN set -xe \
-    && curl -fsSL 'https://xdebug.org/files/xdebug-2.5.5.tgz' -o xdebug.tar.gz \
+
+#################### Install Xdebug ####################
+
+ARG WITH_XDEBUG
+
+RUN if [ ${WITH_XDEBUG} = true ]; then \
+    set -xe \
+    && curl -fsSL 'https://xdebug.org/files/xdebug-2.6.0.tgz' -o xdebug.tar.gz \
     && mkdir -p xdebug \
     && tar -xf xdebug.tar.gz -C xdebug --strip-components=1 \
     && rm xdebug.tar.gz \
@@ -70,7 +77,14 @@ RUN set -xe \
     && make install \
     && make clean \
     ) \
-    && rm -r xdebug
-    
-# RUN set -xe \
-#    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+    && rm -r xdebug \
+;fi
+
+#################### Install Composer ####################
+
+ARG WITH_COMPOSER
+
+RUN if [ ${WITH_COMPOSER} = true ]; then \
+    set -xe \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer \
+;fi
