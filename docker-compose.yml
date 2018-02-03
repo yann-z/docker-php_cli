@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-### PHP-CLI Container #######################################
+#################### PHP-CLI Container ####################
 
     php71-cli-service:
       container_name: "php-${TAG_PHP71_CLI}"
@@ -15,9 +15,9 @@ services:
           - WITH_XDEBUG=${PHP_WITH_XDEBUG} 
           - WITH_COMPOSER=${PHP_WITH_COMPOSER}
       volumes:
-        - ${PATH_PROJECT_ROOT}/conf/php.ini:/usr/local/etc/php/php.ini
-        - ${PATH_PROJECT_ROOT}/conf/php_xdbug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdbug.ini
-        - ${PATH_WEB_DATA}/php_log:/usr/local/var/log
+        - ${PATH_PHP_CONF}/php.ini:/usr/local/etc/php/php.ini
+        - ${PATH_PHP_CONF}/php_xdbug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdbug.ini
+        - ${PATH_RUN_DATA}/php_log:/usr/local/var/log
         - ${PATH_WEB_TEST}:/var/www/test
       working_dir: /var/www/test
       networks:
@@ -30,7 +30,7 @@ services:
       extra_hosts:
         xdebug_ide_host: ${XDEBUG_IDE_HOST_IP}
 
-### Networks Setup ##########################################
+#################### Networks Setup ####################
 
 networks:
     php-cli:
