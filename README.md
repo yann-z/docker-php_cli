@@ -12,9 +12,8 @@ vi ~/.bashrc
 ~~~
 在尾部添加下面内容
 ~~~
-alias cd-lnmp='cd /mnt/host_d/Docker/compose/lnmp'
-alias cd-phpc='cd /mnt/host_d/Docker/compose/php_cli'
-alias run-phpc='cd-phpc && docker-compose run --rm -p 8000:8000 php71-cli-service'
+alias cd-dc='cd /mnt/host_d/Docker/compose'
+alias run-pc='cd-dc && cd php_cli && docker-compose run --rm -p 8000:8000 php71-cli-service'
 ~~~
 
 ### 使添加的alias命令立即生效
@@ -24,15 +23,15 @@ source ~/.bashrc
 
 ### 启动php-cli服务并进入'php -a'交互模式
 ~~~
-run-phpc
+run-pc
 ~~~
 
 ### 启动php-cli服务并进入bash
 ~~~
-run-phpc bash
+run-pc bash
 ~~~
 
 ### 启动php-cli服务并运行shell命令，例如输出'hello world'
 ~~~
-run-phpc echo 'hello world'
+run-pc echo 'hello world'
 ~~~

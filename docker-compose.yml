@@ -21,7 +21,7 @@ services:
         - ${PATH_WEB_TEST}:/var/www/test
       working_dir: /var/www/test
       networks:
-        - php-cli
+        - cli_network
       ports:
         - "8000:8000"
       environment:
@@ -33,4 +33,4 @@ services:
 #################### Networks Setup ####################
 
 networks:
-    php-cli:
+    cli_network:
