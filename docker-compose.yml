@@ -17,7 +17,7 @@ services:
       volumes:
         - ${PATH_PHP_CONF}/php.ini:/usr/local/etc/php/php.ini
         - ${PATH_PHP_CONF}/php_xdbug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdbug.ini
-        - ${PATH_RUN_DATA}/php_log:/usr/local/var/log
+        - ${PATH_DATA_ROOT}/php_log:/usr/local/var/log
         - ${PATH_WEB_TEST}:/var/www/test
       working_dir: /var/www/test
       networks:
